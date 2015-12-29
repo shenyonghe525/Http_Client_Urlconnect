@@ -18,10 +18,16 @@ import java.util.List;
 
 /**
  * 作者： shenyonghe689 on 15/12/29.
+ * 作为apache提供的网络请求包，更稳定，更简单，但是性能不佳
  */
 public class HttpClientRequest
 {
-
+    /**
+     *
+     * @param uri 请求地址
+     * @param list 请求头列表，可以为空
+     * @return     返回结果
+     */
     public static String doHttpClientGet(String uri,List<HttpParameterDto> list)
     {
         try {
@@ -64,6 +70,13 @@ public class HttpClientRequest
         }
     }
 
+    /**
+     *
+     * @param urlPath 请求路径
+     * @param parameters 参数列表
+     * @param headers  请求头列表
+     * @return         返回结果
+     */
     public static String doHttpClientPost(String urlPath, List<HttpParameterDto> parameters,
                                         List<HttpParameterDto> headers)
     {

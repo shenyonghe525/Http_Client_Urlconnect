@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * 作者： shenyonghe689 on 15/12/29.
+ * 自从2.3以后对httpurlconnection做了优化，并且性能能够也比Httpclient更佳
+ * 在API23中就不再支持httpclient
  */
 public class HttpURLConnectionRequest
 {
