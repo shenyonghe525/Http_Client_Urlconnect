@@ -7,6 +7,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,17 @@ public class MainActivity extends Activity implements View.OnClickListener
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            textView.setText(msg.getData().getString("result"));
+            switch (msg.what){
+                case 1:
+                    textView.setText(msg.getData().getString("result"));
+                    break;
+                case 2:
+                    Toast.makeText(MainActivity.this,"网络连接异常，请查看网络状况！",Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+
         }
     };
 
@@ -76,28 +87,55 @@ public class MainActivity extends Activity implements View.OnClickListener
                 {
                     case R.id.btn_urlGet:
 
-                        result = HttpURLConnectionRequest.doHttpURLGet("http://192.168.57" +
-                                ".1:8080/MyWebAPI/H5UpdateServlet?appID=1000&platform=Android" +
-                                "&appVersion=1.0", headers);
+                        if(IsInternetConnect.isConnectByPing())
+                        {
+                            result = HttpURLConnectionRequest.doHttpURLGet("http://192.168.57" +
+                                    ".1:8080/MyWebAPI/H5UpdateServlet?appID=1000&platform=Android" +
+                                    "&appVersion=1.0", headers);
+                        }else {
+                            sendError();
+                            System.out.println("没有网络连接");
+                        }
                         break;
 
                     case R.id.btn_urlPost:
 
-                        result = HttpURLConnectionRequest.doHttpURLPost("http://192.168.57" +
-                                ".1:8080/MyWebAPI/H5UpdateServlet", parameterDtos, headers);
+                        if(IsInternetConnect.isConnectByPing())
+                        {
+                            result = HttpURLConnectionRequest.doHttpURLPost("http://192.168.57" +
+                                    ".1:8080/MyWebAPI/H5UpdateServlet", parameterDtos, headers);
+                        }else {
+                            sendError();
+                            System.out.println("没有网络连接");
+                        }
+
                         break;
 
                     case R.id.btn_clientGet:
 
-                        result = HttpClientRequest.doHttpClientGet("http://192.168.57" +
-                                ".1:8080/MyWebAPI/H5UpdateServlet?appID=1000&platform=Android" +
-                                "&appVersion=1.0", headers);
+                        if(IsInternetConnect.isConnectByPing())
+                        {
+                            result = HttpClientRequest.doHttpClientGet("http://192.168.57" +
+                                    ".1:8080/MyWebAPI/H5UpdateServlet?appID=1000&platform=Android" +
+                                    "&appVersion=1.0", headers);
+                        }else {
+                            sendError();
+                            System.out.println("没有网络连接");
+                        }
+
                         break;
 
                     case R.id.btn_clientPost:
 
-                        result = HttpURLConnectionRequest.doHttpURLPost("http://192.168.57" +
-                                ".1:8080/MyWebAPI/H5UpdateServlet", parameterDtos, headers);
+                        if(IsInternetConnect.isConnectByPing())
+                        {
+                            result = HttpURLConnectionRequest.doHttpURLPost("http://192.168.57" +
+                                    ".1:8080/MyWebAPI/H5UpdateServlet", parameterDtos, headers);
+                        }else {
+                            sendError();
+                            System.out.println("没有网络连接");
+                        }
+
                         break;
                     default:
                         break;
@@ -112,11 +150,17 @@ public class MainActivity extends Activity implements View.OnClickListener
     private void sendMessage(String result)
     {
         Message message = Message.obtain();
+        message.what = 1;
         Bundle bundle = new Bundle();
         bundle.putString("result", result);
         System.out.println("<=====Http请求结果====>" +
                 result);
         message.setData(bundle);
         mHandler.sendMessage(message);
+    }
+
+    private void sendError()
+    {
+        mHandler.sendEmptyMessage(2);
     }
 }
